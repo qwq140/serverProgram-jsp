@@ -31,7 +31,7 @@ public class UserDao {
 	}
 	
 	public List<User> findAll() {
-		String sql = "SELECT id, username, email, userRole FROM user";
+		String sql = "SELECT id, username, email, userRole FROM user WHERE NOT userRole = 'admin'";
 		Connection conn = DBConn.getConnection();
 		PreparedStatement pstmt=null;
 		ResultSet rs = null;
