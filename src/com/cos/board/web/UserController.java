@@ -1,6 +1,7 @@
 package com.cos.board.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -50,6 +51,11 @@ public class UserController extends HttpServlet {
 			int userCount = userService.유저수();
 			int lastPage = (userCount-1)/8; 
 			request.setAttribute("lastPage", lastPage);
+			List<Integer> pageCount = new ArrayList<>();
+			for (int i = 0; i < lastPage+1; i++) {
+				pageCount.add(i+1);
+			}
+			request.setAttribute("pageCount", pageCount);
 			
 			RequestDispatcher dis = request.getRequestDispatcher("user/userList.jsp");
 			dis.forward(request, response);

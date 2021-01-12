@@ -28,22 +28,36 @@
 		</tbody>
 	</table>
 	<ul class="pagination">
-	<c:choose>
-		<c:when test="${param.page==0 }">
-			<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-		</c:when>
-		<c:otherwise>
-		<li class="page-item"><a class="page-link" href="/board/user?cmd=list&page=${param.page-1 }">Previous</a></li>
-		</c:otherwise>
-	</c:choose>
-	<c:choose>
-		<c:when test="${lastPage == param.page }">
-			<li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-		</c:when>
-		<c:otherwise>
-		<li class="page-item"><a class="page-link" href="/board/user?cmd=list&page=${param.page+1 }">Next</a></li>
-		</c:otherwise>
-	</c:choose>
+		<c:choose>
+			<c:when test="${param.page==0 }">
+				<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="page-item"><a class="page-link"
+					href="/board/user?cmd=list&page=${param.page-1 }">Previous</a></li>
+			</c:otherwise>
+		</c:choose>
+		<c:forEach var="pageCount" items="${pageCount }">
+			<c:choose>
+				<c:when test="${param.page==pageCount-1 }">
+					<li class="page-item active"><a class="page-link"
+						href="/board/user?cmd=list&page=${pageCount-1 }">${pageCount }</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="page-item"><a class="page-link"
+						href="/board/user?cmd=list&page=${pageCount-1 }">${pageCount }</a></li>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+		<c:choose>
+			<c:when test="${lastPage == param.page }">
+				<li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="page-item"><a class="page-link"
+					href="/board/user?cmd=list&page=${param.page+1 }">Next</a></li>
+			</c:otherwise>
+		</c:choose>
 	</ul>
 </div>
 <script src="/board/js/userDelete.js"></script>
