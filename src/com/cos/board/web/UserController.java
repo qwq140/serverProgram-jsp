@@ -1,6 +1,7 @@
 package com.cos.board.web;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,11 +9,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.websocket.SendResult;
 
+import com.cos.board.domain.user.User;
 import com.cos.board.domain.user.dto.JoinReqDto;
+import com.cos.board.domain.user.dto.LoginReqDto;
 import com.cos.board.service.UserService;
 import com.cos.board.util.Script;
+import com.google.gson.Gson;
 
 @WebServlet("/user")
 public class UserController extends HttpServlet {
@@ -38,6 +43,8 @@ public class UserController extends HttpServlet {
 		String cmd = request.getParameter("cmd");
 		UserService userService = new UserService();
 		if(cmd.equals("list")) {
+			List<User> users = userService.유저목록();
+			request.setAttribute("users", users);
 			RequestDispatcher dis = request.getRequestDispatcher("user/userList.jsp");
 			dis.forward(request, response);
 		} else if(cmd.equals("joinForm")) {
@@ -61,9 +68,48 @@ public class UserController extends HttpServlet {
 				Script.back(response, "회원가입에 실패하셨습니다.");
 			}
 		} else if(cmd.equals("loginForm")) {
-			
+			RequestDispatcher dis = request.getRequestDispatcher("user/login.jsp");
+			dis.forward(request, response);
 		} else if(cmd.equals("login")) {
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
 			
+			LoginReqDto dto = new LoginReqDto();
+			dto.setUsername(username);
+			dto.setPassword(password);
+			
+			User userEntity = userService.로그인(dto);
+			System.out.println("userEntity : "+userEntity);
+			if(userEntity != null) {
+				HttpSession session = request.getSession();
+				session.setAttribute("principal", userEntity);
+				response.sendRedirect("index.jsp");
+			} else {
+				Script.back(response, "로그인에 실패하셨습니다.");
+			}
+			
+		} else if(cmd.equals("logout")) {
+			HttpSession session = request.getSession();
+			session.invalidate();
+			response.sendRedirect("index.jsp");
+		} else if(cmd.equals("delete")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			int result = userService.삭제(id);
+			
+			if(result == 1) {
+				HttpSession session = request.getSession();
+				User principal = (User)session.getAttribute("principal");
+//				System.out.println("principal : "+principal);
+				if(principal.getUserRole().equals("admin")) {
+					response.sendRedirect("index.jsp");
+				} else {
+					session.invalidate();
+					response.sendRedirect("index.jsp");
+				}
+			} else {
+				Script.back(response, "삭제 실패");
+			}
+
 		}
 	}
 }

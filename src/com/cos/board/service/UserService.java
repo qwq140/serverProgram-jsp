@@ -1,7 +1,11 @@
 package com.cos.board.service;
 
+import java.util.List;
+
+import com.cos.board.domain.user.User;
 import com.cos.board.domain.user.UserDao;
 import com.cos.board.domain.user.dto.JoinReqDto;
+import com.cos.board.domain.user.dto.LoginReqDto;
 
 public class UserService {
 	
@@ -12,5 +16,17 @@ public class UserService {
 	}
 	public int 회원가입(JoinReqDto dto) {
 		return userDao.save(dto);
+	}
+	
+	public User 로그인(LoginReqDto dto) {
+		return userDao.findByUsernameAndPassword(dto);
+	}
+	
+	public List<User> 유저목록(){
+		return userDao.findAll();
+	}
+	
+	public int 삭제(int id) {
+		return userDao.deleteById(id);
 	}
 }
