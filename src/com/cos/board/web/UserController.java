@@ -43,8 +43,14 @@ public class UserController extends HttpServlet {
 		String cmd = request.getParameter("cmd");
 		UserService userService = new UserService();
 		if(cmd.equals("list")) {
-			List<User> users = userService.유저목록();
+			int page = Integer.parseInt(request.getParameter("page"));
+			List<User> users = userService.유저목록(page);
 			request.setAttribute("users", users);
+			
+			int userCount = userService.유저수();
+			int lastPage = (userCount-1)/8; 
+			request.setAttribute("lastPage", lastPage);
+			
 			RequestDispatcher dis = request.getRequestDispatcher("user/userList.jsp");
 			dis.forward(request, response);
 		} else if(cmd.equals("joinForm")) {

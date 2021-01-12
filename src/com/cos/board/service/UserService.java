@@ -22,11 +22,15 @@ public class UserService {
 		return userDao.findByUsernameAndPassword(dto);
 	}
 	
-	public List<User> 유저목록(){
-		return userDao.findAll();
+	public List<User> 유저목록(int page){
+		return userDao.findAll(page);
 	}
 	
 	public int 삭제(int id) {
 		return userDao.deleteById(id);
+	}
+	
+	public int 유저수() {
+		return userDao.count();
 	}
 }
